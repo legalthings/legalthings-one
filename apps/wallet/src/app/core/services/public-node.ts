@@ -1,5 +1,5 @@
 import { Injectable, Inject, ClassProvider } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { map, switchMap, switchMapTo, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { LTO_PUBLIC_API } from '../../tokens';
@@ -71,9 +71,12 @@ export class PublicNodeImpl implements PublicNode {
       limit,
       type: index
     };
+    let headers = new HttpHeaders();
+    headers = headers.set('Cache-Control', 'no-cache');
     return this._http
       .get<any[]>(this._publicApi + 'index/transactions/addresses/' + address, {
         params,
+        headers,
         observe: 'response'
       })
       .pipe(
